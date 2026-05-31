@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlowForge — Coming Soon</title>
+<meta name="description" content="FlowForge — advanced 3D printing, 3D CAD/design and digital fabrication. A FlowTech AI division. Coming soon.">
+
+<!-- Open Graph (og.png is a binary — upload via GitHub web UI; see deploy notes) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="FlowForge — Design · Print · Produce">
+<meta property="og:description" content="Advanced 3D printing, 3D CAD/design and digital fabrication. A FlowTech AI division.">
+<meta property="og:image" content="/og.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --obsidian:#0B1114;
+    --ink:#1A2230;
+    --slate:#5B6675;
+    --mist:#E7ECF2;
+    --white:#FFFFFF;
+    --forge-deep:#9E3400;
+    --forge-mid:#FF6F00;
+    --forge-bright:#FFA62B;
+    --forge-grad:linear-gradient(180deg,var(--forge-deep) 0%,var(--forge-mid) 50%,var(--forge-bright) 100%);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html,body{height:100%}
+
+  body{
+    background:var(--obsidian);
+    color:var(--mist);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    font-weight:300;
+    -webkit-font-smoothing:antialiased;
+    min-height:100svh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    position:relative;
+  }
+
+  /* atmosphere: faint engineering grid + warm core glow */
+  body::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:
+      linear-gradient(to right,rgba(231,236,242,0.035) 1px,transparent 1px),
+      linear-gradient(to bottom,rgba(231,236,242,0.035) 1px,transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 80% 70% at 50% 42%,#000 30%,transparent 78%);
+    -webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 42%,#000 30%,transparent 78%);
+    pointer-events:none;
+  }
+  body::after{
+    content:"";
+    position:absolute;
+    width:760px;height:760px;
+    top:32%;left:50%;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle,rgba(255,111,0,0.16) 0%,rgba(255,111,0,0.05) 38%,transparent 68%);
+    filter:blur(8px);
+    pointer-events:none;
+  }
+
+  main{
+    position:relative;
+    z-index:1;
+    width:min(680px,90vw);
+    text-align:center;
+    padding:48px 24px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .mark{
+    width:132px;height:132px;
+    margin-bottom:38px;
+    filter:drop-shadow(0 6px 28px rgba(255,111,0,0.32));
+    opacity:0;
+    animation:rise .9s cubic-bezier(.2,.7,.2,1) .05s forwards;
+  }
+  .mark svg{width:100%;height:100%;display:block}
+
+  .wordmark{
+    font-family:"Michroma",sans-serif;
+    font-size:clamp(30px,7vw,52px);
+    letter-spacing:.04em;
+    color:var(--white);
+    line-height:1;
+    opacity:0;
+    animation:rise .9s cubic-bezier(.2,.7,.2,1) .18s forwards;
+  }
+
+  .tagline{
+    font-family:"Michroma",sans-serif;
+    font-size:clamp(10px,2.1vw,13px);
+    letter-spacing:.34em;
+    text-transform:uppercase;
+    margin-top:20px;
+    background:var(--forge-grad);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    opacity:0;
+    animation:rise .9s cubic-bezier(.2,.7,.2,1) .3s forwards;
+  }
+
+  .rule{
+    width:0;height:1px;margin:34px 0 26px;
+    background:linear-gradient(90deg,transparent,var(--forge-mid),transparent);
+    animation:grow 1s cubic-bezier(.2,.7,.2,1) .46s forwards;
+  }
+
+  .status{
+    font-size:clamp(11px,2vw,13px);
+    letter-spacing:.42em;
+    text-transform:uppercase;
+    color:var(--slate);
+    opacity:0;
+    animation:rise .9s cubic-bezier(.2,.7,.2,1) .56s forwards;
+  }
+  .status .dot{
+    display:inline-block;width:6px;height:6px;border-radius:50%;
+    background:var(--forge-mid);margin-right:12px;vertical-align:middle;
+    box-shadow:0 0 0 0 rgba(255,111,0,.55);
+    animation:pulse 2.4s ease-out infinite;
+  }
+
+  .descriptor{
+    max-width:460px;
+    margin-top:22px;
+    font-size:clamp(14px,2.4vw,16px);
+    font-weight:300;
+    line-height:1.6;
+    color:var(--mist);
+    opacity:0;
+    animation:rise .9s cubic-bezier(.2,.7,.2,1) .66s forwards;
+  }
+
+  .cta{
+    display:inline-flex;align-items:center;gap:10px;
+    margin-top:40px;
+    padding:14px 28px;
+    border:1px solid rgba(255,111,0,.45);
+    border-radius:2px;
+    font-family:"IBM Plex Sans",sans-serif;
+    font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--forge-bright);
+    text-decoration:none;
+    background:rgba(255,111,0,.04);
+    transition:background .35s ease,border-color .35s ease,color .35s ease,transform .35s ease;
+    opacity:0;
+    animation:rise .9s cubic-bezier(.2,.7,.2,1) .78s forwards;
+  }
+  .cta:hover{
+    background:var(--forge-grad);
+    border-color:transparent;
+    color:var(--obsidian);
+    transform:translateY(-2px);
+  }
+  .cta svg{width:15px;height:15px}
+
+  .parent{
+    margin-top:54px;
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--slate);
+    opacity:0;
+    animation:rise .9s cubic-bezier(.2,.7,.2,1) .9s forwards;
+  }
+  .parent a{color:var(--mist);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .3s ease}
+  .parent a:hover{border-color:var(--forge-mid)}
+
+  @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes grow{from{width:0}to{width:180px}}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,111,0,.5)}70%{box-shadow:0 0 0 9px rgba(255,111,0,0)}100%{box-shadow:0 0 0 0 rgba(255,111,0,0)}}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important}
+    .mark,.wordmark,.tagline,.status,.descriptor,.cta,.parent{opacity:1}
+    .rule{width:180px}
+  }
+</style>
+</head>
+<body>
+  <main>
+    <div class="mark" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-110 -110 220 220">
+        <defs>
+          <linearGradient id="g-forge" x1="0" y1="100" x2="0" y2="-100" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#9E3400"/>
+            <stop offset="50%" stop-color="#FF6F00"/>
+            <stop offset="100%" stop-color="#FFA62B"/>
+          </linearGradient>
+        </defs>
+        <path d="M 43.301,24.872 L 23.356,36.447 L 23.356,52.248 L 24.365,52.901 L 25.202,53.764 L 25.823,54.793 L 26.196,55.936 L 26.302,57.133 L 26.136,58.323 L 25.706,59.446 L 25.035,60.443 L 24.156,61.263 L 23.115,61.864 L 21.965,62.215 L 20.766,62.299 L 19.579,62.110 L 18.465,61.659 L 17.481,60.968 L 16.678,60.074 L 16.097,59.022 L 15.767,57.866 L 15.707,56.665 L 15.918,55.482 L 16.390,54.377 L 17.099,53.406 L 18.009,52.620 L 19.072,52.059 L 19.072,34.125 L 34.835,24.956 L 34.835,4.924 L 34.641,-4.842 L 34.641,-20.000 L 18.833,-29.126 L 18.833,-52.159 L 17.800,-52.770 L 16.930,-53.599 L 16.269,-54.602 L 15.851,-55.728 L 15.697,-56.919 L 15.815,-58.114 L 16.198,-59.252 L 16.828,-60.275 L 17.672,-61.130 L 18.686,-61.773 L 19.820,-62.171 L 21.013,-62.304 L 22.206,-62.165 L 23.337,-61.761 L 24.349,-61.113 L 25.188,-60.254 L 25.813,-59.228 L 26.191,-58.088 L 26.303,-56.892 L 26.143,-55.702 L 25.719,-54.578 L 25.053,-53.579 L 24.179,-52.754 L 23.142,-52.148 L 23.142,-31.651 L 34.834,-24.920 L 55.148,-36.646 L 55.141,-58.164 L 23.816,-76.250 L 2.165,-63.750 L 2.165,-25.660 L 23.305,-13.455 L 23.305,13.455 L 2.165,25.660 L 2.165,63.750 L 23.816,76.250 L 54.560,58.500 L 54.561,31.501 L 43.301,24.872 Z" fill="url(#g-forge)" fill-rule="nonzero" stroke="none"/>
+        <path d="M 77.942,-2.488 L 57.236,9.467 L 57.228,10.668 L 56.950,11.837 L 56.417,12.913 L 55.655,13.842 L 54.704,14.575 L 53.612,15.076 L 52.436,15.318 L 51.235,15.289 L 50.072,14.991 L 49.005,14.439 L 48.090,13.661 L 47.374,12.697 L 46.892,11.596 L 46.671,10.416 L 46.721,9.216 L 47.039,8.058 L 47.610,7.001 L 48.404,6.100 L 49.380,5.400 L 50.489,4.938 L 51.673,4.738 L 52.872,4.809 L 54.024,5.147 L 55.071,5.737 L 77.942,-7.488 L 77.942,-18.008 L 54.560,-31.500 L 38.977,-22.534 L 39.060,-4.801 L 39.165,4.751 L 39.165,17.391 L 43.301,19.865 L 58.895,29.003 L 77.942,18.027 L 77.942,-2.488 Z" fill="url(#g-forge)" fill-rule="nonzero" stroke="none"/>
+        <path d="M -34.641,24.985 L -18.961,34.144 L -18.961,52.079 L -17.958,52.684 L -17.115,53.499 L -16.477,54.482 L -16.075,55.582 L -15.930,56.745 L -16.049,57.911 L -16.426,59.020 L -17.042,60.017 L -17.866,60.850 L -18.856,61.478 L -19.961,61.867 L -21.125,61.999 L -22.290,61.867 L -23.395,61.478 L -24.385,60.850 L -25.209,60.017 L -25.825,59.020 L -26.202,57.911 L -26.321,56.745 L -26.176,55.582 L -25.774,54.482 L -25.136,53.499 L -24.293,52.684 L -23.290,52.079 L -23.290,36.554 L -43.301,25.000 L -43.301,24.968 L -54.560,31.500 L -54.560,58.500 L -23.816,76.250 L -2.165,63.750 L -2.165,25.660 L -23.305,13.455 L -23.305,-13.455 L -2.165,-25.660 L -2.165,-63.750 L -23.816,-76.250 L -54.561,-58.499 L -54.566,-36.504 L -39.002,-27.482 L -23.291,-36.553 L -23.291,-52.158 L -24.324,-52.769 L -25.193,-53.596 L -25.854,-54.598 L -26.273,-55.722 L -26.429,-56.912 L -26.313,-58.107 L -25.931,-59.245 L -25.303,-60.268 L -24.462,-61.123 L -23.449,-61.768 L -22.318,-62.168 L -21.125,-62.304 L -19.933,-62.168 L -18.802,-61.768 L -17.789,-61.123 L -16.948,-60.268 L -16.320,-59.245 L -15.938,-58.107 L -15.822,-56.912 L -15.978,-55.722 L -16.397,-54.598 L -17.058,-53.596 L -17.927,-52.769 L -18.960,-52.158 L -18.960,-34.053 L -34.644,-24.998 L -34.644,-4.843 L -34.641,4.842 L -34.641,24.985 Z" fill="url(#g-forge)" fill-rule="nonzero" stroke="none"/>
+        <path d="M -77.942,-7.449 L -55.074,5.739 L -54.029,5.149 L -52.878,4.810 L -51.680,4.737 L -50.496,4.936 L -49.388,5.396 L -48.411,6.094 L -47.616,6.993 L -47.043,8.048 L -46.722,9.204 L -46.670,10.403 L -46.888,11.584 L -47.366,12.684 L -48.080,13.650 L -48.992,14.430 L -50.056,14.985 L -51.218,15.286 L -52.418,15.319 L -53.594,15.081 L -54.687,14.585 L -55.640,13.856 L -56.405,12.931 L -56.943,11.858 L -57.225,10.691 L -57.238,9.491 L -77.942,-2.449 L -77.942,18.016 L -58.892,29.001 L -40.853,18.610 L -40.875,18.597 L -40.661,18.473 L -40.639,18.486 L -38.971,17.526 L -38.971,4.843 L -38.971,-4.843 L -38.971,-22.500 L -54.567,-31.504 L -77.942,-18.009 L -77.942,-7.449 Z" fill="url(#g-forge)" fill-rule="nonzero" stroke="none"/>
+        <path d="M 12.372,-9.643 L -0.007,-2.496 L -12.374,-9.636 L 0.000,-16.780 L 12.372,-9.643 Z" fill="none" stroke="url(#g-forge)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M 14.538,-5.893 L 14.538,8.409 L 2.165,15.554 L 2.165,1.250 L 14.538,-5.893 Z" fill="none" stroke="url(#g-forge)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M -14.538,8.393 L -14.538,-5.893 L -2.165,1.250 L -2.165,15.554 L -14.538,8.393 Z" fill="none" stroke="url(#g-forge)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M 18.868,-10.893 L 0.000,-21.787 L -18.868,-10.893 L -18.868,10.893 L 0.000,21.787 L 18.868,10.893 L 18.868,-10.893 Z" fill="none" stroke="url(#g-forge)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="0" cy="0" r="86.103" fill="none" stroke="url(#g-forge)" stroke-width="2.0"/>
+        <circle cx="0" cy="0" r="89.000" fill="none" stroke="url(#g-forge)" stroke-width="2.0"/>
+      </svg>
+    </div>
+
+    <h1 class="wordmark">FlowForge</h1>
+    <p class="tagline">Design&nbsp;·&nbsp;Print&nbsp;·&nbsp;Produce</p>
+
+    <div class="rule" aria-hidden="true"></div>
+
+    <p class="status"><span class="dot" aria-hidden="true"></span>Coming Soon</p>
+
+    <p class="descriptor">Advanced 3D printing, 3D&nbsp;CAD&nbsp;/&nbsp;design and digital fabrication — engineering-grade capability, built to spec.</p>
+
+    <a class="cta" href="mailto:admin@flowtechai.com.au?subject=FlowForge%20%E2%80%94%20Register%20interest">
+      Register interest
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+
+    <p class="parent">A division of <a href="https://flowtechai.com.au">FlowTech&nbsp;AI</a></p>
+  </main>
+</body>
+</html>
