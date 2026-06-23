@@ -62,7 +62,7 @@
   .intro p.lede{max-width:62ch;margin:20px auto 0;font-size:clamp(14px,2.2vw,17px);line-height:1.7;color:var(--mist);opacity:.84}
 
   /* Tool */
-  .tool{position:relative;z-index:1;padding:30px 0 90px}
+  .tool{position:relative;z-index:1;padding:30px 0 40px}
   .grid{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
   @media (max-width:860px){.grid{grid-template-columns:1fr}}
   .card{background:linear-gradient(180deg,var(--surface) 0%,var(--surface-2) 100%);border:1px solid var(--hairline);border-radius:8px;padding:24px;margin-bottom:20px}
@@ -132,6 +132,16 @@
   .foot-bottom p{font-size:12.5px;color:var(--slate);letter-spacing:.03em}
   .foot-bottom a{color:var(--mist);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .3s}
   .foot-bottom a:hover{border-color:var(--forge-mid)}
+  /* Beyond-the-tool callout */
+  .beyond{position:relative;z-index:1;padding:0 0 90px}
+  .beyond-card{display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap;background:linear-gradient(180deg,var(--surface) 0%,var(--surface-2) 100%);border:1px solid var(--hairline);border-left:2px solid var(--forge-mid);border-radius:8px;padding:30px 32px}
+  .beyond-copy{max-width:66ch}
+  .beyond-copy h2{font-family:"Michroma",sans-serif;font-weight:400;color:var(--white);font-size:clamp(20px,3vw,26px);line-height:1.2;letter-spacing:.01em;margin-top:12px}
+  .beyond-copy p{margin-top:14px;font-size:14.5px;line-height:1.7;color:var(--mist);opacity:.84}
+  .beyond-btn{flex:none;display:inline-flex;align-items:center;gap:9px;font-family:"IBM Plex Sans",sans-serif;font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--forge-bright);text-decoration:none;padding:13px 22px;border:1px solid rgba(255,111,0,.45);border-radius:2px;background:rgba(255,111,0,.04);white-space:nowrap;transition:background .35s ease,border-color .35s ease,color .35s ease,transform .35s ease}
+  .beyond-btn:hover{background:var(--forge-grad);border-color:transparent;color:var(--obsidian);transform:translateY(-1px)}
+  .beyond-btn svg{width:15px;height:15px}
+  @media (max-width:680px){.beyond-btn{width:100%;justify-content:center}}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 <script type="application/ld+json">
@@ -276,6 +286,22 @@
           </a>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Beyond-the-tool callout -->
+<div class="beyond">
+  <div class="wrap">
+    <div class="beyond-card">
+      <div class="beyond-copy">
+        <span class="eyebrow">Custom &amp; complex work</span>
+        <h2>Need more than an instant price?</h2>
+        <p>The tool above is built for straightforward single prints. For anything bigger or more bespoke — multi-part projects, design and CAD from a sketch or sample, large or repeat batches, specialist materials and finishes, or tight engineering tolerances — email us and we'll quote it properly. Send your files, drawings or photos and a note on what it needs to do, and we'll come back with an approach and a price.</p>
+      </div>
+      <a class="beyond-btn" href="mailto:info@flowforge.com.au?subject=FlowForge%20%E2%80%94%20Custom%20quote%20enquiry">Email info@flowforge.com.au
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
     </div>
   </div>
 </div>
