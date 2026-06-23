@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instant Quote — FlowForge</title>
+<meta name="description" content="Get an instant, indicative 3D printing quote from FlowForge. Upload your STL or enter your slicer figures, pick a material, and see pricing on the spot. Made in Australia.">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Instant Quote — FlowForge">
+<meta property="og:description" content="Upload your model for an instant indicative 3D printing quote. Engineering-grade custom parts, made in Australia.">
+<meta property="og:image" content="https://flowforge.com.au/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://flowforge.com.au/quote.html">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --obsidian:#0B1114;--ink:#1A2230;--slate:#5B6675;--mist:#E7ECF2;--white:#FFFFFF;
+    --forge-deep:#9E3400;--forge-mid:#FF6F00;--forge-bright:#FFA62B;
+    --forge-grad:linear-gradient(180deg,var(--forge-deep) 0%,var(--forge-mid) 50%,var(--forge-bright) 100%);
+    --forge-grad-h:linear-gradient(90deg,var(--forge-deep) 0%,var(--forge-mid) 50%,var(--forge-bright) 100%);
+    --surface:#10171C;--surface-2:#131D24;--hairline:rgba(231,236,242,0.10);--hairline-soft:rgba(231,236,242,0.06);--maxw:1180px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}html,body{height:100%}
+  body{background:var(--obsidian);color:var(--mist);font-family:"IBM Plex Sans",system-ui,sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden;position:relative}
+  body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(to right,rgba(231,236,242,0.030) 1px,transparent 1px),linear-gradient(to bottom,rgba(231,236,242,0.030) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 20%,transparent 80%);-webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 20%,transparent 80%);pointer-events:none;z-index:0}
+  a{color:inherit}img,svg{display:block}
+  .wrap{width:min(var(--maxw),92vw);margin-inline:auto}
+  .eyebrow{font-family:"Michroma",sans-serif;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--slate)}
+  .grad-text{background:var(--forge-grad-h);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+
+  header{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .4s ease,border-color .4s ease,backdrop-filter .4s ease;border-bottom:1px solid transparent}
+  header.scrolled{background:rgba(11,17,20,0.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hairline-soft)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:72px}
+  .brand{display:flex;align-items:center;gap:13px;text-decoration:none}
+  .brand .sig{width:30px;height:30px;filter:drop-shadow(0 2px 10px rgba(255,111,0,.30))}
+  .brand .name{font-family:"Michroma",sans-serif;font-size:18px;letter-spacing:.04em;color:var(--white)}
+  .nav-links{display:flex;align-items:center;gap:30px}
+  .nav-links a{text-decoration:none;color:var(--mist);font-size:13.5px;letter-spacing:.04em;opacity:.78;transition:opacity .25s ease,color .25s ease}
+  .nav-links a:hover,.nav-links a[aria-current="page"]{opacity:1;color:var(--forge-bright)}
+  .nav-links a.soon{opacity:.4;cursor:default;pointer-events:none}
+  .nav-links a.soon::after{content:" · soon";font-size:10px;letter-spacing:.1em;color:var(--slate)}
+  .nav-cta{font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--forge-bright);text-decoration:none;padding:10px 20px;border:1px solid rgba(255,111,0,.45);border-radius:2px;background:rgba(255,111,0,.04);transition:background .35s ease,border-color .35s ease,color .35s ease,transform .35s ease;white-space:nowrap}
+  .nav-cta:hover{background:var(--forge-grad);border-color:transparent;color:var(--obsidian);transform:translateY(-1px)}
+  .menu-btn{display:none;background:none;border:0;cursor:pointer;padding:8px;color:var(--mist)}
+  .menu-btn svg{width:24px;height:24px;display:block}
+  @media (max-width:900px){.nav-links{display:none}.nav-cta{display:none}.menu-btn{display:block}
+    header.open .nav-links{display:flex;flex-direction:column;position:absolute;top:72px;left:0;right:0;background:rgba(11,17,20,0.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hairline-soft);padding:10px 0;gap:0}
+    header.open .nav-links a{padding:15px 6vw;width:100%;opacity:.92;font-size:15px;letter-spacing:.06em}}
+  .brand .sig img,.foot-brand .sig img{width:100%;height:100%;display:block}
+
+  /* Page intro */
+  .intro{position:relative;z-index:1;padding:150px 0 40px;text-align:center}
+  .intro h1{font-family:"Michroma",sans-serif;font-weight:400;color:var(--white);font-size:clamp(30px,5.5vw,52px);line-height:1.05;letter-spacing:.02em;margin-top:16px}
+  .intro p.lede{max-width:62ch;margin:20px auto 0;font-size:clamp(14px,2.2vw,17px);line-height:1.7;color:var(--mist);opacity:.84}
+
+  /* Tool */
+  .tool{position:relative;z-index:1;padding:30px 0 90px}
+  .grid{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+  @media (max-width:860px){.grid{grid-template-columns:1fr}}
+  .card{background:linear-gradient(180deg,var(--surface) 0%,var(--surface-2) 100%);border:1px solid var(--hairline);border-radius:8px;padding:24px;margin-bottom:20px}
+  .step-head{font-family:"Michroma",sans-serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--forge-bright);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+  .step-n{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--forge-grad);color:var(--obsidian);font-size:11px;font-weight:600;font-family:"IBM Plex Sans"}
+
+  .mats{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}
+  .mat{background:rgba(231,236,242,0.02);border:1px solid var(--hairline);border-radius:6px;padding:13px 14px;cursor:pointer;transition:border-color .25s,background .25s;text-align:left}
+  .mat:hover{border-color:rgba(255,111,0,.34)}
+  .mat.sel{border-color:var(--forge-mid);background:rgba(255,111,0,.06)}
+  .mat .mn{font-weight:500;font-size:14.5px;color:var(--white)}
+  .mat .mh{font-size:11.5px;color:var(--mist);opacity:.7;margin-top:4px;line-height:1.4}
+
+  .tabs{display:flex;background:rgba(231,236,242,0.03);border:1px solid var(--hairline);border-radius:4px;padding:4px;gap:4px;margin-bottom:20px}
+  .tabs button{flex:1;background:transparent;border:0;color:var(--mist);font-family:"IBM Plex Sans";font-size:13px;font-weight:500;letter-spacing:.02em;padding:11px;border-radius:2px;cursor:pointer;transition:.2s;opacity:.7}
+  .tabs button.active{background:var(--forge-grad);color:var(--obsidian);opacity:1;font-weight:600}
+  .tabs button:not(.active):hover{opacity:1}
+  .pane{display:none}.pane.active{display:block}
+
+  .drop{border:1px dashed var(--hairline);border-radius:6px;padding:30px 18px;text-align:center;cursor:pointer;transition:.25s;background:rgba(231,236,242,0.02)}
+  .drop:hover,.drop.over{border-color:rgba(255,111,0,.5);background:rgba(255,111,0,.04)}
+  .drop .ic{width:30px;height:30px;margin:0 auto 10px;color:var(--forge-bright)}
+  .drop .big{font-size:14.5px;font-weight:500;color:var(--white);margin-bottom:6px}
+  .drop .sm{font-size:12px;color:var(--mist);opacity:.7;max-width:46ch;margin:0 auto}
+  #fileInput{display:none}
+  .filechip{margin-top:12px;font-size:12.5px;color:var(--mist);font-family:"IBM Plex Mono";background:rgba(231,236,242,0.03);border:1px solid var(--hairline);border-radius:4px;padding:10px 13px;display:none;justify-content:space-between;align-items:center}
+  .filechip.show{display:flex}
+  .filechip .clear{color:var(--slate);cursor:pointer;font-size:16px;line-height:1}
+
+  .fields{display:grid;grid-template-columns:1fr 1fr;gap:15px 18px;margin-top:18px}
+  .field{display:flex;flex-direction:column;gap:7px}
+  label{font-size:12px;color:var(--mist);opacity:.82;font-weight:400;display:flex;justify-content:space-between}
+  label .hint{color:var(--slate);font-size:10.5px}
+  .inputwrap{position:relative;display:flex;align-items:center}
+  .inputwrap .post{position:absolute;right:12px;color:var(--slate);font-family:"IBM Plex Mono";font-size:13px;pointer-events:none}
+  input[type=number],select{width:100%;background:rgba(11,17,20,0.6);border:1px solid var(--hairline);color:var(--mist);font-family:"IBM Plex Mono";font-size:14px;padding:10px 12px;border-radius:4px;transition:.2s}
+  input.haspost{padding-right:44px}
+  input:focus,select:focus{outline:none;border-color:var(--forge-mid);background:rgba(11,17,20,0.85)}
+  select{font-family:"IBM Plex Sans";cursor:pointer}
+  .estnote{font-size:11.5px;color:var(--mist);opacity:.62;margin-top:12px;line-height:1.55}
+
+  .quote{position:sticky;top:92px}
+  .qhead{background:var(--forge-grad);border-radius:8px 8px 0 0;padding:22px 24px}
+  .qlabel{font-family:"Michroma";font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(11,17,20,.72)}
+  .qbig{font-family:"IBM Plex Mono";font-weight:600;font-size:38px;color:var(--obsidian);margin-top:6px;letter-spacing:-1px;line-height:1}
+  .qsub{font-size:12px;color:rgba(11,17,20,.74);margin-top:7px;font-family:"IBM Plex Mono"}
+  .qbody{background:linear-gradient(180deg,var(--surface) 0%,var(--surface-2) 100%);border:1px solid var(--hairline);border-top:0;border-radius:0 0 8px 8px;padding:18px 20px 20px}
+  .qrow{display:flex;justify-content:space-between;padding:7px 0;font-size:13px;color:var(--mist);opacity:.82;font-family:"IBM Plex Mono"}
+  .qrow .v{color:var(--white);opacity:1}
+  .qrow.first{border-top:1px solid var(--hairline-soft);margin-top:2px;padding-top:10px}
+  .empty{font-size:13px;color:var(--mist);opacity:.6;text-align:center;padding:16px 6px;line-height:1.6}
+  .disc{font-size:11px;color:var(--mist);opacity:.6;margin-top:14px;line-height:1.55;border-top:1px solid var(--hairline-soft);padding-top:13px}
+  .cta{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:15px;background:var(--forge-grad);color:var(--obsidian);border:0;border-radius:2px;padding:13px;font-family:"IBM Plex Sans";font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:filter .3s,transform .3s}
+  .cta:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  .cta svg{width:15px;height:15px}
+
+  footer{position:relative;z-index:1;border-top:1px solid var(--hairline-soft);padding:56px 0 40px}
+  .foot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:40px;flex-wrap:wrap}
+  .foot-brand{display:flex;align-items:center;gap:13px}
+  .foot-brand .sig{width:34px;height:34px}
+  .foot-brand .name{font-family:"Michroma",sans-serif;font-size:19px;color:var(--white);letter-spacing:.04em}
+  .foot-brand .tl{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--slate);margin-top:5px}
+  .foot-links{display:flex;gap:28px;flex-wrap:wrap}
+  .foot-links a{font-size:13.5px;color:var(--mist);opacity:.74;text-decoration:none;letter-spacing:.03em;transition:opacity .25s,color .25s}
+  .foot-links a:hover{opacity:1;color:var(--forge-bright)}
+  .foot-bottom{margin-top:42px;padding-top:26px;border-top:1px solid var(--hairline-soft);display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+  .foot-bottom p{font-size:12.5px;color:var(--slate);letter-spacing:.03em}
+  .foot-bottom a{color:var(--mist);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .3s}
+  .foot-bottom a:hover{border-color:var(--forge-mid)}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "3D printing and digital fabrication",
+  "provider": {"@type":"LocalBusiness","name":"FlowForge","url":"https://flowforge.com.au","email":"info@flowforge.com.au"},
+  "areaServed": "AU",
+  "url": "https://flowforge.com.au/quote.html"
+}
+</script>
+</head>
+<body>
+
+<header id="site-header">
+  <div class="wrap nav">
+    <a class="brand" href="index.html" aria-label="FlowForge home">
+      <span class="sig" aria-hidden="true"><img src="/mark.svg" alt="FlowForge" loading="eager" decoding="async"></span>
+      <span class="name">FlowForge</span>
+    </a>
+    <nav class="nav-links" id="primary-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="engineering.html">Engineering</a>
+      <a href="studio.html">Studio</a>
+      <a href="work.html">Work</a>
+      <a href="quote.html" aria-current="page">Quote</a>
+      <a href="#" style="opacity:0.5;pointer-events:none;cursor:default;" class="soon">Shop</a>
+      <a href="mailto:info@flowforge.com.au?subject=FlowForge%20%E2%80%94%20Enquiry">Contact</a>
+    </nav>
+    <a class="nav-cta" href="mailto:info@flowforge.com.au?subject=FlowForge%20%E2%80%94%20Enquiry">Start a project</a>
+    <button class="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+  </div>
+</header>
+
+<div class="intro">
+  <div class="wrap">
+    <span class="eyebrow">Instant quote</span>
+    <h1>Price your part on the spot.</h1>
+    <p class="lede">Drop in your model and we'll read its size right here in your browser, estimate the print and give you an indicative price. Already sliced it? Enter your figures instead. We confirm the final price once we've reviewed your file.</p>
+  </div>
+</div>
+
+<div class="tool">
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <div class="card">
+          <div class="step-head"><span class="step-n">1</span>Choose your material</div>
+          <div class="mats" id="mats"></div>
+        </div>
+
+        <div class="card">
+          <div class="step-head"><span class="step-n">2</span>Tell us about your part</div>
+          <div class="tabs">
+            <button id="tab-upload" class="active" onclick="setTab('upload')">Upload your model</button>
+            <button id="tab-manual" onclick="setTab('manual')">I have my slicer figures</button>
+          </div>
+
+          <div class="pane active" id="pane-upload">
+            <div class="drop" id="drop">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>
+              <div class="big">Drop your .STL here, or tap to browse</div>
+              <div class="sm">We read the model size in your browser — your file never leaves your device until you send it to us.</div>
+            </div>
+            <input type="file" id="fileInput" accept=".stl">
+            <div class="filechip" id="filechip"><span id="filename"></span><span class="clear" onclick="clearFile()">✕</span></div>
+
+            <div class="fields">
+              <div class="field">
+                <label>Quality</label>
+                <select id="quality" onchange="recompute()">
+                  <option value="draft">Draft — large layers, fastest</option>
+                  <option value="standard" selected>Standard — everyday parts</option>
+                  <option value="fine">Fine — detail &amp; miniatures</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Infill <span class="hint">how solid</span></label>
+                <select id="infill" onchange="recompute()">
+                  <option value="10">10% — light</option>
+                  <option value="15">15%</option>
+                  <option value="20" selected>20% — standard</option>
+                  <option value="30">30%</option>
+                  <option value="50">50% — strong</option>
+                  <option value="100">100% — solid</option>
+                </select>
+              </div>
+            </div>
+            <div class="estnote" id="estnote">Upload a model and we'll estimate weight and print time. You can fine-tune both below before sending.</div>
+
+            <div class="fields" id="estfields" style="display:none">
+              <div class="field">
+                <label>Est. weight <span class="hint">edit if known</span></label>
+                <div class="inputwrap"><input type="number" id="u-weight" class="haspost" min="0" step="1" oninput="markManual();recompute()"><span class="post">g</span></div>
+              </div>
+              <div class="field">
+                <label>Est. print time <span class="hint">edit if known</span></label>
+                <div class="inputwrap"><input type="number" id="u-time" class="haspost" min="0" step="0.1" oninput="markManual();recompute()"><span class="post">h</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pane" id="pane-manual">
+            <div class="fields">
+              <div class="field">
+                <label>Part weight <span class="hint">from your slicer</span></label>
+                <div class="inputwrap"><input type="number" id="m-weight" class="haspost" value="80" min="0" step="1" oninput="recompute()"><span class="post">g</span></div>
+              </div>
+              <div class="field">
+                <label>Print time <span class="hint">from your slicer</span></label>
+                <div class="inputwrap"><input type="number" id="m-time" class="haspost" value="4" min="0" step="0.1" oninput="recompute()"><span class="post">h</span></div>
+              </div>
+            </div>
+            <div class="estnote">These appear in Orca, Bambu Studio, Cura or PrusaSlicer once you slice your model.</div>
+          </div>
+
+          <div class="fields">
+            <div class="field">
+              <label>Quantity</label>
+              <div class="inputwrap"><input type="number" id="qty" value="1" min="1" step="1" oninput="recompute()"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quote">
+        <div class="qhead">
+          <div class="qlabel">Indicative price <span id="gstlabel">(incl. GST)</span></div>
+          <div class="qbig" id="qprice">—</div>
+          <div class="qsub" id="qper"></div>
+        </div>
+        <div class="qbody">
+          <div id="qlines">
+            <div class="empty">Pick a material and add your part details to see an instant price.</div>
+          </div>
+          <div class="disc" id="disc" style="display:none">
+            Indicative only. We confirm the final price once we've reviewed your file — orientation, supports and finish can shift it slightly. Assumes a print-ready model.
+          </div>
+          <a class="cta" id="cta" style="display:none" href="#">Send this to FlowForge
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <span class="sig" aria-hidden="true"><img src="/mark.svg" alt="FlowForge" loading="eager" decoding="async"></span>
+        <div>
+          <div class="name">FlowForge</div>
+          <div class="tl">Design&nbsp;·&nbsp;Print&nbsp;·&nbsp;Produce</div>
+        </div>
+      </div>
+      <nav class="foot-links" aria-label="Footer">
+        <a href="engineering.html">Engineering</a>
+        <a href="studio.html">Studio</a>
+        <a href="work.html">Work</a>
+        <a href="quote.html">Quote</a>
+        <a href="mailto:info@flowforge.com.au?subject=FlowForge%20%E2%80%94%20Enquiry">Contact</a>
+      </nav>
+    </div>
+    <div class="foot-bottom">
+      <p>© 2026 FlowTech AI Pty Ltd&nbsp;&nbsp;·&nbsp;&nbsp;ABN 76 689 878 420</p>
+      <p>A division of <a href="https://flowtechai.com.au">FlowTech&nbsp;AI</a>&nbsp;&nbsp;·&nbsp;&nbsp;Made in Australia</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Header scroll + mobile menu (matches site)
+  var header=document.getElementById('site-header');
+  var onScroll=function(){if(window.scrollY>24){header.classList.add('scrolled');}else{header.classList.remove('scrolled');}};
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  (function(){var mb=document.querySelector('.menu-btn');if(!mb)return;var h=document.getElementById('site-header');mb.addEventListener('click',function(){var open=h.classList.toggle('open');mb.setAttribute('aria-expanded',open);});Array.prototype.forEach.call(h.querySelectorAll('.nav-links a'),function(a){a.addEventListener('click',function(){h.classList.remove('open');mb.setAttribute('aria-expanded','false');});});})();
+</script>
+
+<script>
+// ===== Published price rates — derived from the FlowForge rate card (prices only; no cost/margin recoverable) =====
+const RATE_BASE=16.88, RATE_FINISH=11.25, RATE_TIME=16.86, FLOOR=30.00, GST=0.10;
+const QUOTE_EMAIL="info@flowforge.com.au";
+const MATERIALS={
+  pla:{name:"PLA",rate:0.0256,density:1.24,diff:1.00,hint:"Detailed models & prototypes"},
+  petg:{name:"PETG",rate:0.0256,density:1.27,diff:1.00,hint:"Tough everyday parts, brackets"},
+  abs:{name:"ABS",rate:0.0440,density:1.04,diff:1.12,hint:"Heat-resistant functional parts"},
+  pa:{name:"PA (Nylon)",rate:0.0423,density:1.14,diff:1.12,hint:"Wear-resistant gears & hinges"},
+  asa:{name:"ASA",rate:0.0476,density:1.07,diff:1.12,hint:"UV-stable outdoor parts"},
+  pc:{name:"PC",rate:0.0600,density:1.20,diff:1.15,hint:"High-heat, high-impact engineering"},
+  petgcf:{name:"PETG-CF",rate:0.0706,density:1.30,diff:1.00,hint:"Stiff, light functional parts"},
+  pacf:{name:"PA-CF / PC-CF",rate:0.1058,density:1.18,diff:1.00,hint:"Premium engineering — drones, jigs"}
+};
+const THROUGHPUT={draft:50,standard:36,fine:14}; const FILL_BASE=0.40, TIME_FIXED=0.15;
+
+let selMat=null, tab="upload", stlVolumeCm3=null, userEdited=false;
+const $=id=>document.getElementById(id);
+const aud=v=>"$"+v.toLocaleString("en-AU",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+const matsEl=$("mats");
+Object.entries(MATERIALS).forEach(([k,m])=>{
+  const d=document.createElement("div");d.className="mat";d.dataset.k=k;
+  d.innerHTML=`<div class="mn">${m.name}</div><div class="mh">${m.hint}</div>`;
+  d.onclick=()=>{selMat=k;document.querySelectorAll(".mat").forEach(x=>x.classList.toggle("sel",x.dataset.k===k));recompute();};
+  matsEl.appendChild(d);
+});
+
+function setTab(t){tab=t;
+  $("tab-upload").classList.toggle("active",t==="upload");
+  $("tab-manual").classList.toggle("active",t==="manual");
+  $("pane-upload").classList.toggle("active",t==="upload");
+  $("pane-manual").classList.toggle("active",t==="manual");
+  recompute();}
+function markManual(){userEdited=true;}
+
+function parseSTLVolume(buffer){
+  const dv=new DataView(buffer);
+  const n=buffer.byteLength>=84?dv.getUint32(80,true):0;
+  const isBinary=buffer.byteLength===84+n*50 && n>0;
+  let vol=0;
+  if(isBinary){let o=84;
+    for(let i=0;i<n;i++){o+=12;
+      const ax=dv.getFloat32(o,true),ay=dv.getFloat32(o+4,true),az=dv.getFloat32(o+8,true);
+      const bx=dv.getFloat32(o+12,true),by=dv.getFloat32(o+16,true),bz=dv.getFloat32(o+20,true);
+      const cx=dv.getFloat32(o+24,true),cy=dv.getFloat32(o+28,true),cz=dv.getFloat32(o+32,true);
+      vol+=(ax*(by*cz-bz*cy)-ay*(bx*cz-bz*cx)+az*(bx*cy-by*cx))/6;o+=38;}
+  }else{const txt=new TextDecoder().decode(buffer);
+    const nums=txt.match(/vertex\s+(-?[\d.eE+]+)\s+(-?[\d.eE+]+)\s+(-?[\d.eE+]+)/g);
+    if(!nums||nums.length<3)return null;
+    const v=[];nums.forEach(line=>{const p=line.trim().split(/\s+/);v.push([+p[1],+p[2],+p[3]]);});
+    for(let i=0;i+2<v.length;i+=3){const a=v[i],b=v[i+1],c=v[i+2];
+      vol+=(a[0]*(b[1]*c[2]-b[2]*c[1])-a[1]*(b[0]*c[2]-b[2]*c[0])+a[2]*(b[0]*c[1]-b[1]*c[0]))/6;}}
+  vol=Math.abs(vol)/1000;return (isFinite(vol)&&vol>0)?vol:null;}
+
+function handleFile(file){if(!file)return;
+  $("filename").textContent=file.name;$("filechip").classList.add("show");
+  const r=new FileReader();
+  r.onload=e=>{const vol=parseSTLVolume(e.target.result);
+    if(!vol){stlVolumeCm3=null;$("estnote").textContent="Couldn't read that file — try exporting a binary .STL, or switch to entering your slicer figures.";$("estfields").style.display="none";return;}
+    stlVolumeCm3=vol;userEdited=false;
+    $("estnote").textContent="Estimated from your model. Adjust below if you already know the exact figures.";
+    $("estfields").style.display="grid";applyEstimate();};
+  r.readAsArrayBuffer(file);}
+function clearFile(){stlVolumeCm3=null;userEdited=false;
+  $("filechip").classList.remove("show");$("fileInput").value="";$("estfields").style.display="none";
+  $("estnote").textContent="Upload a model and we'll estimate weight and print time. You can fine-tune both before sending.";recompute();}
+function applyEstimate(){if(stlVolumeCm3===null||!selMat){recompute();return;}
+  const m=MATERIALS[selMat],infill=+$("infill").value/100,fill=FILL_BASE+(1-FILL_BASE)*infill;
+  const printedVol=stlVolumeCm3*fill;
+  $("u-weight").value=Math.round(printedVol*m.density);
+  $("u-time").value=(TIME_FIXED+printedVol/THROUGHPUT[$("quality").value]).toFixed(1);
+  recompute();}
+
+const drop=$("drop");
+drop.onclick=()=>$("fileInput").click();
+$("fileInput").onchange=e=>handleFile(e.target.files[0]);
+["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over");}));
+["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over");}));
+drop.addEventListener("drop",e=>{if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
+
+function applyEstimateSilently(){if(stlVolumeCm3===null||!selMat)return;
+  const m=MATERIALS[selMat],infill=+$("infill").value/100,fill=FILL_BASE+(1-FILL_BASE)*infill;
+  const printedVol=stlVolumeCm3*fill;
+  $("u-weight").value=Math.round(printedVol*m.density);
+  $("u-time").value=(TIME_FIXED+printedVol/THROUGHPUT[$("quality").value]).toFixed(1);}
+function currentInputs(){
+  const qty=Math.max(1,Math.round(+$("qty").value||1));let g,h;
+  if(tab==="upload"){if(stlVolumeCm3!==null&&!userEdited)applyEstimateSilently();
+    g=parseFloat($("u-weight").value);h=parseFloat($("u-time").value);}
+  else{g=parseFloat($("m-weight").value);h=parseFloat($("m-time").value);}
+  return {qty,g,h};}
+
+function recompute(){
+  const {qty,g,h}=currentInputs();
+  const ok=selMat&&g>0&&h>0;
+  if(!ok){$("qprice").textContent="—";$("qper").textContent="";
+    $("qlines").innerHTML='<div class="empty">Pick a material and add your part details to see an instant price.</div>';
+    $("disc").style.display="none";$("cta").style.display="none";return;}
+  const m=MATERIALS[selMat];
+  const perUnitEx=m.rate*g+RATE_TIME*h*(m.diff||1)+RATE_FINISH;
+  let jobEx=RATE_BASE+perUnitEx*qty; if(jobEx<FLOOR)jobEx=FLOOR;
+  const inc=jobEx*(1+GST);
+  $("qprice").textContent=aud(inc);
+  $("qper").textContent=qty>1?aud(inc/qty)+" each · "+qty+" units":"single unit";
+  $("qlines").innerHTML=
+    `<div class="qrow first"><span>Material</span><span class="v">${m.name}</span></div>`+
+    `<div class="qrow"><span>Weight</span><span class="v">${Math.round(g)} g${qty>1?" × "+qty:""}</span></div>`+
+    `<div class="qrow"><span>Est. print time</span><span class="v">${h.toFixed(1)} h${qty>1?" × "+qty:""}</span></div>`;
+  $("disc").style.display="block";$("cta").style.display="flex";
+  const subj=encodeURIComponent("Print enquiry — "+m.name+" ×"+qty);
+  const body=encodeURIComponent("Hi FlowForge,\n\nI'd like a quote confirmed for:\n• Material: "+m.name+"\n• Weight: "+Math.round(g)+" g\n• Est. print time: "+h.toFixed(1)+" h\n• Quantity: "+qty+"\n• Indicative price: "+aud(inc)+" incl. GST\n\nI'll attach my file. Thanks!");
+  $("cta").href="mailto:"+QUOTE_EMAIL+"?subject="+subj+"&body="+body;
+}
+recompute();
+</script>
+</body>
+</html>
