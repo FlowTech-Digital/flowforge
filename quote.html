@@ -266,10 +266,11 @@
 
           <div class="fields">
             <div class="field">
-              <label>Quantity</label>
+              <label>Quantity <span class="hint">volume pricing applies</span></label>
               <div class="inputwrap"><input type="number" id="qty" value="1" min="1" step="1" oninput="recompute()"></div>
             </div>
           </div>
+          <div class="estnote">Volume pricing, applied automatically to the per-unit rate: 5–9 −10% · 10–24 −15% · 25+ −25%.</div>
         </div>
       </div>
 
@@ -437,6 +438,17 @@ function currentInputs(){
   else{g=parseFloat($("m-weight").value);h=parseFloat($("m-time").value);}
   return {qty,g,h};}
 
+function volumeDiscount(qty){
+  if(qty>=25)return 0.25;
+  if(qty>=10)return 0.15;
+  if(qty>=5)return 0.10;
+  return 0;}
+function tierLabel(qty){
+  if(qty>=25)return "25+ units";
+  if(qty>=10)return "10–24 units";
+  if(qty>=5)return "5–9 units";
+  return "";}
+
 function recompute(){
   const {qty,g,h}=currentInputs();
   const ok=selMat&&g>0&&h>0;
@@ -445,17 +457,20 @@ function recompute(){
     $("disc").style.display="none";$("cta").style.display="none";return;}
   const m=MATERIALS[selMat];
   const perUnitEx=m.rate*g+RATE_TIME*h*(m.diff||1)+RATE_FINISH;
-  let jobEx=RATE_BASE+perUnitEx*qty; if(jobEx<FLOOR)jobEx=FLOOR;
+  const vdisc=volumeDiscount(qty);
+  const perUnitNet=perUnitEx*(1-vdisc);
+  let jobEx=RATE_BASE+perUnitNet*qty; if(jobEx<FLOOR)jobEx=FLOOR;
   const inc=jobEx*(1+GST);
   $("qprice").textContent=aud(inc);
   $("qper").textContent=qty>1?aud(inc/qty)+" each · "+qty+" units":"single unit";
   $("qlines").innerHTML=
     `<div class="qrow first"><span>Material</span><span class="v">${m.name}</span></div>`+
     `<div class="qrow"><span>Weight</span><span class="v">${Math.round(g)} g${qty>1?" × "+qty:""}</span></div>`+
-    `<div class="qrow"><span>Est. print time</span><span class="v">${h.toFixed(1)} h${qty>1?" × "+qty:""}</span></div>`;
+    `<div class="qrow"><span>Est. print time</span><span class="v">${h.toFixed(1)} h${qty>1?" × "+qty:""}</span></div>`+
+    (vdisc>0?`<div class="qrow"><span>Volume discount</span><span class="v">${tierLabel(qty)} · −${Math.round(vdisc*100)}% / unit</span></div>`:"");
   $("disc").style.display="block";$("cta").style.display="flex";
   const subj=encodeURIComponent("Print enquiry — "+m.name+" ×"+qty);
-  const body=encodeURIComponent("Hi FlowForge,\n\nI'd like a quote confirmed for:\n• Material: "+m.name+"\n• Weight: "+Math.round(g)+" g\n• Est. print time: "+h.toFixed(1)+" h\n• Quantity: "+qty+"\n• Indicative price: "+aud(inc)+" incl. GST\n\nI'll attach my file. Thanks!");
+  const body=encodeURIComponent("Hi FlowForge,\n\nI'd like a quote confirmed for:\n• Material: "+m.name+"\n• Weight: "+Math.round(g)+" g\n• Est. print time: "+h.toFixed(1)+" h\n• Quantity: "+qty+(vdisc>0?"\n• Volume discount: "+tierLabel(qty)+" (−"+Math.round(vdisc*100)+"% per unit)":"")+"\n• Indicative price: "+aud(inc)+" incl. GST\n\nI'll attach my file. Thanks!");
   $("cta").href="mailto:"+QUOTE_EMAIL+"?subject="+subj+"&body="+body;
 }
 recompute();
